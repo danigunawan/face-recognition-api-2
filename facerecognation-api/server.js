@@ -4,16 +4,16 @@ const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const knex = require('knex');
 
-const postgres = knex({
+const db = knex({
   client: 'pg',
   connection: {
     host : '127.0.0.1',
-    user : 'shijia',
+    user : '',
     password : '',
     database : 'face-recognition'
   }
 });
-console.log(postgres.select('*').from('users'));
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -80,14 +80,18 @@ app.post('/register', (req, res)=>{
 		console.log(hash);
     // Store hash in your password DB.
 	});
-	database.users.push({
-		id: '125',
-		name: name,
-		email: email,
-		entries: 0,
-		joined: new Date()
-	})
-	res.json(database.users[database.users.length-1]);
+	db('users')
+		.returning('*')
+		.insert({
+			name: name,
+			email: email,
+			joined: new Date()
+		})
+		.then(user => {
+			res.json(user[0]);
+		})
+		.catch(err => res.status(400).json('unable to sign up'));
+	
 })
 
 app.put('/image', (req, res)=>{
