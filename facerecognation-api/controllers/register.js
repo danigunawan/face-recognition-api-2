@@ -4,6 +4,10 @@ const handleRegister = (req, res, db, bcrypt) =>{
 	if (!email || !name || !password) {
 		return res.status(400).json('incorrect form submission')
 	}
+	if (password.length < 6 || password.length > 12) {
+		return res.status(400).json('password is too short or too long')
+	}
+
 	// Store hash in your password DB.
 	const hash = bcrypt.hashSync(password);
 
