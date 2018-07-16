@@ -5,12 +5,12 @@ const handleSignIn = (req, res, db, bcrypt)=>{
 		.then(data=>{
 			// Load hash from your password DB.
 			const isValid = bcrypt.compareSync(req.body.password, data[0].hash); // true
-			console.log(isValid);
+			// console.log(isValid);
 			if (isValid) {
 				return db.select('*').from('users')
 					.where('email', '=', req.body.email)
 					.then(user =>{
-						console.log(user);
+						// console.log(user);
 						res.json(user[0]);
 					})
 					.catch(err => res.status(400).json('unable to get user'))
